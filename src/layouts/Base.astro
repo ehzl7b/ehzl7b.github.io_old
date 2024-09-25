@@ -1,0 +1,27 @@
+---
+const {title} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wan2land/d2coding/d2coding-full.css" />
+    </head>
+    <body>
+        <slot />
+    </body>
+</html>
+
+<style lang="scss" is:global>
+    body {
+        position: fixed; top: 0; right: 0; bottom: 0; left: 0;
+        font: 400 16px D2Coding, monospace;
+    }
+    pre, code, kbd, samp {
+        font: 400 16px D2Coding, monospace;
+    }
+</style>
