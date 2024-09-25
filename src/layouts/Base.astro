@@ -17,8 +17,13 @@ const {title} = Astro.props;
 </html>
 
 <style lang="scss" is:global>
+    * {
+        box-sizing: border-box; -ms-overflow-style: none; scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
     body {
-        position: fixed; top: 0; right: 0; bottom: 0; left: 0;
         font: 400 16px D2Coding, monospace;
     }
     pre, code, kbd, samp {
