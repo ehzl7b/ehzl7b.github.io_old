@@ -1,5 +1,5 @@
 {
-  "name": "tezeens.github.io",
+  "name": "ehzl7b.github.io",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "astro": "^4.15.9",
-    "sass-embedded": "^1.79.3"
+    "astro": "4.15.9",
+    "sass-embedded": "1.79.3"
   }
 }
