@@ -3,6 +3,9 @@
 
 <div class="layout">
     <div class="sidebar">
+        <div class="btn">
+            <button>+</button>
+        </div>
         Sidebar...
     </div>
     <div class="mainview">
@@ -11,25 +14,60 @@
 </div>
 
 <style lang="scss">
-    $sidebar-max-width: 480px;
-    $mainview-max-width: 720px;
+    $sidebar-max-width: 320px;
+    $mainview-max-width: 880px;
 
     .layout {
-        position: fixed; top: 0; right: 0; bottom: 0; left: 0;
-        
+        position: relative; height: 100%; width: 100%; max-width: #{$mainview-max-width}; margin: 0 auto;
+        overflow: hidden;
 
         .sidebar, .mainview {
-            overflow-x: hidden; overflow-y: scroll;
+            position: absolute; top: 0; bottom: 0;
             border: 1px solid;
             &:before, &:after {
                 content: " "; display: table-cell; clear: both;
             }
         }
         .sidebar {
+            left: #{-$sidebar-max-width}; width: #{$sidebar-max-width};
+            background: #eee;
+            transition: left 0.4s ease-in-out;
+            z-index: 200;
             
+            .btn {
+                position: absolute; top: 0; right: -32px; width: 32px; height: 32px;
+                background: var(--fg-b);
+                z-index: 9999;
+
+                display: flex; justify-content: center; align-items: center;
+                button {
+                    background: transparent; outline: none; border: 0;
+                    cursor: pointer;
+                    font-size: 32px;
+                }
+                &.checked button {
+                    transform: rotate(45deg);
+                }
+            }
+            &.checked {
+                left: 0;
+            }
         }
         .mainview {
-
+            width: 100%;
+            z-index: 100;
         }
     }
 </style>
+
+<script>
+    "use strict";
+
+    const $sidebar = document.querySelector(".sidebar");
+    const $btn = document.querySelector(".btn");
+
+    $btn?.addEventListener("click", (e) => {
+        $sidebar?.classList?.toggle("checked");
+        $btn?.classList?.toggle("checked");
+    });
+</script>
