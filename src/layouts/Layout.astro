@@ -1,15 +1,23 @@
 ---
 ---
 
-<div class="layout">
+<div class="layout">    
+    <div class="btn">
+        <button>+</button>
+    </div>
     <div class="sidebar">
-        <div class="btn">
-            <button>+</button>
-        </div>
-        Sidebar...
+        {
+            [...Array(30).keys()].map((x) => (
+                <p style="margin-bottom: 30px;">Sidebar + {x}</p>
+            ))
+        }
     </div>
     <div class="mainview">
-        Mainview...
+        {
+            [...Array(30).keys()].map((x) => (
+                <p style="margin-bottom: 30px;">Mainview + {x}</p>
+            ))
+        }
     </div>
 </div>
 
@@ -21,9 +29,15 @@
         position: relative; height: 100%; width: 100%; max-width: #{$mainview-max-width}; margin: 0 auto;
         overflow: hidden;
 
+        @media (min-width: #{$sidebar-max-width + $mainview-max-width}) {
+            max-width: #{$sidebar-max-width + $mainview-max-width};
+        }
+
         .sidebar, .mainview {
             position: absolute; top: 0; bottom: 0;
+            overflow-x: hidden; overflow-y: scroll;
             border: 1px solid;
+
             &:before, &:after {
                 content: " "; display: table-cell; clear: both;
             }
@@ -31,31 +45,43 @@
         .sidebar {
             left: #{-$sidebar-max-width}; width: #{$sidebar-max-width};
             background: #eee;
-            transition: left 0.4s ease-in-out;
+            transition: left 0.4s;
             z-index: 200;
             
-            .btn {
-                position: absolute; top: 0; right: -32px; width: 32px; height: 32px;
-                background: var(--fg-b);
-                z-index: 9999;
-
-                display: flex; justify-content: center; align-items: center;
-                button {
-                    background: transparent; outline: none; border: 0;
-                    cursor: pointer;
-                    font-size: 32px;
-                }
-                &.checked button {
-                    transform: rotate(45deg);
-                }
+            @media (min-width: #{$sidebar-max-width + $mainview-max-width}) {
+                left: 0;
             }
             &.checked {
                 left: 0;
             }
         }
         .mainview {
-            width: 100%;
+            right: 0; width: 100%; max-width: #{$mainview-max-width};
             z-index: 100;
+        }
+        .btn {
+            position: absolute; top: 0; left: 0; width: 32px; height: 32px;
+            background: var(--fg-b);
+            transition: left 0.4s;
+            z-index: 9999;
+
+            display: flex; justify-content: center; align-items: center;
+            button {
+                background: transparent; outline: none; border: 0;
+                cursor: pointer;
+                font-size: 32px;
+            }
+            @media (min-width: #{$sidebar-max-width + $mainview-max-width}) {
+                left: #{$sidebar-max-width};
+                display: none;
+            }
+            &.checked {
+                left: #{$sidebar-max-width};
+
+                button {
+                    transform: rotate(45deg);
+                }
+            }
         }
     }
 </style>
