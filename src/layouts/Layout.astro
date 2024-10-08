@@ -1,4 +1,10 @@
 ---
+import Header from "../components/Header.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import Article from "../components/Article.astro";
+
+const {site} = Astro.props;
 ---
 
 <div class="layout">    
@@ -6,18 +12,16 @@
         <button>+</button>
     </div>
     <div class="sidebar">
-        {
-            [...Array(30).keys()].map((x) => (
-                <p style="margin-bottom: 30px;">Sidebar + {x}</p>
-            ))
-        }
+        <div class="inner">
+            <Header site={site} />
+            <Nav />
+            <div class="sticky"><Footer /></div>
+        </div>
     </div>
     <div class="mainview">
-        {
-            [...Array(30).keys()].map((x) => (
-                <p style="margin-bottom: 30px;">Mainview + {x}</p>
-            ))
-        }
+        <div class="inner">
+            <Article />
+        </div>
     </div>
 </div>
 
@@ -36,10 +40,13 @@
         .sidebar, .mainview {
             position: absolute; top: 0; bottom: 0;
             overflow-x: hidden; overflow-y: scroll;
-            border: 1px solid;
+            border: 1px solid; /* dev */
 
             &:before, &:after {
                 content: " "; display: table-cell; clear: both;
+            }
+            .inner {
+                height: 100%; width: 100%; padding: 5px;
             }
         }
         .sidebar {
@@ -53,6 +60,9 @@
             }
             &.checked {
                 left: 0;
+            }
+            .sticky {
+                position: sticky; top: 100vh;
             }
         }
         .mainview {

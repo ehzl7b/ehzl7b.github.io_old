@@ -1,7 +1,7 @@
 ---
 import Layout from "./Layout.astro";
 
-const {title} = Astro.props;
+const {site} = Astro.props;
 ---
 
 <!doctype html>
@@ -9,13 +9,13 @@ const {title} = Astro.props;
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{title}</title>
+        <title>{site.title}</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wan2land/d2coding/d2coding-full.css" />
         <link rel="stylesheet" href="/css/colors.css" />
     </head>
     <body>
-        <Layout />
+        <Layout site={site}/>
     </body>
 </html>
 

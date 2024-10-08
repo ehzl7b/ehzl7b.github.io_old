@@ -1,0 +1,23 @@
+---
+---
+
+<nav>
+    <ul class="lists">
+        
+    </ul>
+</nav>
+
+<script>
+    "use strict";
+
+    const $lists = document.querySelector("nav .lists");
+    let tmp = await (await fetch("https://raw.githubusercontent.com/ehzl7b/blog/main/nav.json")).text();
+    const navlists = JSON.parse(tmp);
+    
+    let a = "";
+    for (let list of navlists) {
+        a += `<li><a href="/${list.id}">${list.title}</a></li>`;
+    }
+
+    $lists.innerHTML = a;
+</script>
