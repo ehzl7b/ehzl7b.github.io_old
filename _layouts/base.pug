@@ -1,13 +1,33 @@
-- var site = {title: "EHZL7b 블로그"}
+-var site_title = "EHZL7b 블로그";
 
-doctype html
-html(lang="ko")
-    head
-        meta(charset="utf-8")
-        //- meta(http-equiv="X-UA-Compatible", content="IE=edge")
-        meta(name="viewport", content="width=device-width, initial-scale=1")
-        title #{site.title}
-        link(rel="icon" type="image/svg+xml" href="/favicon.svg")
-        link(rel="stylesheet", href="/main.css")
-    body
+.layout
+    .wrapper
+        .sidebar
+            header
+                h1.site-title
+                    a(href="/") #{site_title}
+            nav
+                .nav-wrapper 네비게이션
+            footer
+                div
+                    | 이 블로그는 Node.js로 만들어지고,
+                    br
+                    | Github Pages에서 배포되었습니다.
+        .mainview
+            .maintop
+                div #{site_title}
+            article
+        .btn
+            div +
+script(async).
+    "use strict";
+    const $sidebar = document.querySelector(".sidebar");
+    const $btn = document.querySelector(".btn");
+    const $article = document.querySelector("article");
     
+    // 베뉴버튼
+    const show_menu = (e) => {
+        $sidebar.classList.toggle("clicked");
+        $btn.classList.toggle("clicked");
+    };
+    $btn.addEventListener("click", show_menu);
