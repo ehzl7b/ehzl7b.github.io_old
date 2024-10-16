@@ -20,6 +20,9 @@
         .btn
             div +
 script(async).
+    /**
+     * 메뉴버튼 동작
+     */
     "use strict";
     const $sidebar = document.querySelector(".sidebar");
     const $btn = document.querySelector(".btn");
@@ -31,3 +34,42 @@ script(async).
         $btn.classList.toggle("clicked");
     };
     $btn.addEventListener("click", show_menu);
+script(async).
+    /**
+     * SPA 동작
+     */
+    "use strict";
+    const $article = document.querySelector("article");
+    const fetch_content = async () => {
+        const cur_pathname = window.location.pathname;
+        const tar_pathname = `/pages/${cur_pathname.slice(1)}${cur_pathname === "/" ? "front.html" : ".html"}`;
+
+        let res;
+        try {
+            res = await (await fetch(tar_pathname)).text();
+        } catch (e) {
+            res = await (await fetch("/pages/404.html")).test();
+        }
+
+        $article.innerHTML = res;
+        document.title = (res.matchAll(`<h1>(.*)</h1>`)?[0]?[1] ?? "") + `::#{site_title}`;
+    };
+
+    // 주소 직접입력
+    fetch_content();
+
+    // <a>태그 클릭
+    document.body.onclick = async (e) => {
+        let t = e.target;
+        if (!t.matches("a") || !t.href.startsWith(window.location.origin) || t.href.match(/[.#]/)) return;
+        if (t.href === window.location.href) return;
+
+        e.preventDefault();
+        history.pushState(null, null, t.href);
+        await fetch_content();
+    };
+
+    // 이동버튼 클릭
+    window.onpopstate = async (e) => {
+        await fetch_content();
+    };
