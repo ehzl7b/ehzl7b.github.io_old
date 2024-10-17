@@ -5,24 +5,11 @@ switch (process.argv[2]) {
     case "test":
         test();
         break;
+    case "build":
+        break;
 }
 
 function test() {
-    let md = fg.globSync("./_pages/**/*.md")[0];
-    if (!md) {
-        console.log("No md files");
-        return -1;
-    }
-
-    let a = md2html(md);
+    let a = fg.globSync(`${process.env.PWD}/_pages/**/*.json`);
     console.log(a);
-
-    let pug = fg.globSync("./_layouts/**/*.pug")[0];
-    if (!pug) {
-        console.log("no pug files");
-        return -1;
-    }
-
-    let b = pug2html(pug);
-    console.log(b);
 }

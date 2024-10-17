@@ -61,7 +61,7 @@ doctype html
                     }
 
                     $article.innerHTML = res;
-                    document.title = (res.matchAll(`<h1>(.*)</h1>`)?[0]?[1] ?? "") + `::#{site_title}`;
+                    document.title = (res.matchAll(`<h1>(.*)</h1>`)?.[0]?.[1] ?? "") + `::#{site_title}`;
                 };
 
                 // 주소 직접입력

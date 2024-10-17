@@ -2,11 +2,22 @@ import fg from "fast-glob";
 import fs from "fs-extra";
 import * as sass from "sass";
 import path from "path";
+import {md2html, pug2html} from "./render.js";
 
 const root = process.env.PWD;
+const mdfiles = fg.globSync(`${root}/_pages/**/*.md`);
+const navfile = (() => {
+    let tmp = fg.globSync(`${root}/_pages/**/*.json`)?.[0];
+    if (!tmp) {
+        console.log("No json file for navigation in _pages folder");
+        process.exit(-1);
+    }
+
+    return tmp;
+})();
 
 export const build_assets = async () => {
-    // main.scss -> ㅌmain.css
+    // main.scss -> main.css
     const css = sass.compileAsync(`${root}/_assets/main.scss`, {style: compressed});
     fs.outputFileSync(`${root}/_site/main.css`, css.css, "utf-8");
 
@@ -18,8 +29,24 @@ export const build_assets = async () => {
 
 export const build_pages = async () => {
     // 포스팅 빌드
+    for (let x of mdfiles) {
+        let parsed = path.parse(x);
+        let ver = parsed.name.match(/\[\S*\]/g)?.[0];
+        if (!ver) continue;
+
+        let name = parsed.name.replace(ver, "");
+        let content = md2html(x);
+        fs.outputFileSync(`${root}/_site/pages/${name}.html`);
+    }
 
     // 네비게이션 빌드
+    let navobjs = fs.readJSONSync(tmp);
+    for (let x of navobjs) {
+        let {id, title, order} = x;
+        let r = ``;
+        
+
+    }
 
     // sitemap.xml 빌드
 };
