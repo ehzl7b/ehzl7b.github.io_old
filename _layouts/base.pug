@@ -1,75 +1,84 @@
 -var site_title = "EHZL7b 블로그";
 
-.layout
-    .wrapper
-        .sidebar
-            header
-                h1.site-title
-                    a(href="/") #{site_title}
-            nav
-                .nav-wrapper 네비게이션
-            footer
-                div
-                    | 이 블로그는 Node.js로 만들어지고,
-                    br
-                    | Github Pages에서 배포되었습니다.
-        .mainview
-            .maintop
-                div #{site_title}
-            article
-        .btn
-            div +
-script(async).
-    /**
-     * 메뉴버튼 동작
-     */
-    "use strict";
-    const $sidebar = document.querySelector(".sidebar");
-    const $btn = document.querySelector(".btn");
-    const $article = document.querySelector("article");
-    
-    // 베뉴버튼
-    const show_menu = (e) => {
-        $sidebar.classList.toggle("clicked");
-        $btn.classList.toggle("clicked");
-    };
-    $btn.addEventListener("click", show_menu);
-script(async).
-    /**
-     * SPA 동작
-     */
-    "use strict";
-    const $article = document.querySelector("article");
-    const fetch_content = async () => {
-        const cur_pathname = window.location.pathname;
-        const tar_pathname = `/pages/${cur_pathname.slice(1)}${cur_pathname === "/" ? "front.html" : ".html"}`;
+doctype html
+    html(lang="ko")
+        head
+            meta(charset="utf-8")
+            meta(name="viewport" content="width=device-width, initial-scale=1")
+            title #{site_title}
+            link(rel="icon" type="image/svg+xml" href="/favicon.svg")
+            link(rel="stylesheet" href="/main.css")
+        body
+            .layout
+                .wrapper
+                    .sidebar
+                        header
+                            h1.site-title
+                                a(href="/") #{site_title}
+                        nav
+                            .nav-wrapper 네비게이션
+                        footer
+                            div
+                                | 이 블로그는 Node.js로 만들어지고,
+                                br
+                                | Github Pages에서 배포되었습니다.
+                    .mainview
+                        .maintop
+                            div #{site_title}
+                        article
+                    .btn
+                        div +
+            script(async).
+                /**
+                * 메뉴버튼 동작
+                */
+                "use strict";
+                const $sidebar = document.querySelector(".sidebar");
+                const $btn = document.querySelector(".btn");
+                const $article = document.querySelector("article");
+                
+                // 베뉴버튼
+                const show_menu = (e) => {
+                    $sidebar.classList.toggle("clicked");
+                    $btn.classList.toggle("clicked");
+                };
+                $btn.addEventListener("click", show_menu);
+            script(async).
+                /**
+                * SPA 동작
+                */
+                "use strict";
+                const $article = document.querySelector("article");
+                const fetch_content = async () => {
+                    const cur_pathname = window.location.pathname;
+                    const tar_pathname = `/pages/${cur_pathname.slice(1)}${cur_pathname === "/" ? "front.html" : ".html"}`;
 
-        let res;
-        try {
-            res = await (await fetch(tar_pathname)).text();
-        } catch (e) {
-            res = await (await fetch("/pages/404.html")).test();
-        }
+                    let res;
+                    try {
+                        res = await (await fetch(tar_pathname)).text();
+                    } catch (e) {
+                        res = await (await fetch("/pages/404.html")).test();
+                    }
 
-        $article.innerHTML = res;
-        document.title = (res.matchAll(`<h1>(.*)</h1>`)?[0]?[1] ?? "") + `::#{site_title}`;
-    };
+                    $article.innerHTML = res;
+                    document.title = (res.matchAll(`<h1>(.*)</h1>`)?[0]?[1] ?? "") + `::#{site_title}`;
+                };
 
-    // 주소 직접입력
-    fetch_content();
+                // 주소 직접입력
+                fetch_content();
 
-    // <a>태그 클릭
-    document.body.onclick = async (e) => {
-        let t = e.target;
-        if (!t.matches("a") || !t.href.startsWith(window.location.origin) || t.href.match(/[.#]/)) return;
-        if (t.href === window.location.href) return;
+                // <a>태그 클릭
+                document.body.onclick = async (e) => {
+                    let t = e.target;
+                    if (!t.matches("a") || !t.href.startsWith(window.location.origin) || t.href.match(/[.#]/)) return;
+                    if (t.href === window.location.href) return;
 
-        e.preventDefault();
-        history.pushState(null, null, t.href);
-        await fetch_content();
-    };
+                    e.preventDefault();
+                    history.pushState(null, null, t.href);
+                    await fetch_content();
+                };
 
-    // 이동버튼 클릭
-    window.onpopstate = async (e) => {
-        await fetch_content();
-    };
+                // 이동버튼 클릭
+                window.onpopstate = async (e) => {
+                    await fetch_content();
+                };

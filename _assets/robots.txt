@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ehzl7b.github.io/sitemap.xml
