@@ -39,11 +39,16 @@ export const build_pages = async () => {
         fs.outputFileSync(`${root}/_site/pages/${name}.html`);
     }
 
-    // 네비게이션 빌드
+    // 네비게이션 페이지 빌드
     let navobjs = fs.readJSONSync(tmp);
     for (let x of navobjs) {
         let {id, title, order} = x;
-        let r = ``;
+        let pages = mdfiles.filter((y) => path.parse(y).dir.includes(id));
+
+        let r = `<h1>${title} 관련 포스팅들</h1>`;
+        for (let y of pages) {
+            r += `${}`;
+        }
         
 
     }
