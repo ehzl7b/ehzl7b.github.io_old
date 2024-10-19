@@ -6,15 +6,17 @@ import {md2html, pug2html} from "./render.js";
 
 const root = process.env.PWD;
 const mdfiles = fg.globSync(`${root}/_pages/**/*.md`);
-const navfile = (() => {
-    let tmp = fg.globSync(`${root}/_pages/**/*.json`)?.[0];
-    if (!tmp) {
-        console.log("No json file for navigation in _pages folder");
-        process.exit(-1);
-    }
-
-    return tmp;
-})();
+// const navfile = (() => {
+//     let tmp = fg.globSync(`${root}/_pages/**/*.json`)?.[0];
+//     if (!tmp) {
+//         console.log("No json file for navigation in _pages folder");
+//         process.exit(-1);
+//     }
+//     return tmp;
+// })();
+const site = {title: "EHZL7b 블로그"};
+const nav = fs.readJSONSync(`${root}/_pages/nav.json`);
+const today = new Date().toISOString().split("T")[0];
 
 export const build_assets = async () => {
     // main.scss -> main.css
@@ -40,14 +42,12 @@ export const build_pages = async () => {
     }
 
     // 네비게이션 페이지 빌드
-    let navobjs = fs.readJSONSync(tmp);
-    for (let x of navobjs) {
-        let {id, title, order} = x;
+    for (let x of nav) {
         let pages = mdfiles.filter((y) => path.parse(y).dir.includes(id));
 
-        let r = `<h1>${title} 관련 포스팅들</h1>`;
+        let r = `<h1>${x.title} 관련 포스팅들</h1><div class="meta">${x.title} 관련 포스팅 링크 리스트</div><div class="meta">Last Updated: ${today}</div>`;
         for (let y of pages) {
-            r += `${}`;
+            r += `<p><a href="${}">${}</a></p>`;
         }
         
 

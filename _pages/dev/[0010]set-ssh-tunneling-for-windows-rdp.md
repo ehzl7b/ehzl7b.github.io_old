@@ -1,8 +1,8 @@
 ---
-layout: post
+layout: "post"
 title: "윈도우즈 11 SSH 터널링으로 RDP 우회접속 방법"
-description: 회사 정책 상, 외부 PC에 윈도우즈 원격 접속(RDP)이 막혔을 때, SSH 터널링으로 우회하여 접속하는 방법 기록
-updated: 2024-07-02
+description: "회사 정책 상, 외부 PC에 윈도우즈 원격 접속(RDP)이 막혔을 때, SSH 터널링으로 우회하여 접속하는 방법 기록"
+updated: "2024-07-02"
 ---
 
 ## RDP 원격 접속

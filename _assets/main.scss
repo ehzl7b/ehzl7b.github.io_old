@@ -19,151 +19,102 @@ a, a:link, a:visited, a:hover, a:active {text-decoration: none; word-break: brea
 b, strong {font-weight: 400; color: var(--fg-b);}
 
 // vars
-$sidebar-width: 320px;
-$mainview-max-width: 880px;
+$layout-max-width: 1200px;
+@mixin section {
+    margin: 0.5rem 0; padding: 0.5rem;
+}
 @mixin box {
     padding: 0.5rem;
     background: var(--bg-1);
-    
-    // border: 1px solid var(--fg-b);
-    // border-radius: 0.25rem; box-shadow: var(--box-shadow);
     border-radius: 0.25rem; box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
 // layout
-.layout {
-    position: fixed; top: 0; right: 0; bottom: 0; left: 0;
-    bakcground: var(--bg-1);
-    
-    .wrapper {
-        position: relative; height: 100%; width: 100%; max-width: #{$mainview-max-width}; margin: 0 auto;
-        overflow: hidden;
+body {
+    position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 0;
+    display: flex; justify-content: center; align-items: strech;
+    background: var(--bg-1);
+    .layout {
+        flex: 0 0 100%; max-width: #{$layout-max-width};
+        overflow-y: scroll;
         background: var(--bg-2);
         
-        @media (min-width: #{$sidebar-width + $mainview-max-width}) {
-            max-width: #{$sidebar-width + $mainview-max-width};
+        &:before, &:after {
+            content: " "; display: table-cell; clear: both;
         }
-        
-        .sidebar, .mainview {
-            position: absolute; top: 0; height: 100%; padding: 0.5rem;
-            overflow-y: scroll;
+        header, nav, article, footer {
+            @include section;
         }
-        .sidebar {
-            left: #{-$sidebar-width}; width: #{$sidebar-width}; z-index: 100;
+        nav {
             background: var(--bg-3);
-            
-            @media (min-width: #{$sidebar-width + $mainview-max-width}) {
-                left: 0;
-            }
-            
-            &.clicked {
-                left: 0;
-            }
         }
-        .mainview {
-            width: 100%; right: 0; max-width: #{$mainview-max-width}; z-index: 50;
-        }
-        .btn {
-            position: absolute; top: 0; left: 0; height: 2rem; width: 2rem; z-index: 9999;
-            background: var(--fg-b);
-            display: flex; justify-content: center; align-items: center;
-            
-            @media (min-width: #{$sidebar-width + $mainview-max-width}) {
-                display: none;
-            }
-            
-            div {
-                outline: 0; border: none;
-                font-size: 2rem;
-                cursor: pointer;
-            }
-            &.clicked {
-                left: #{$sidebar-width};
-                
-                div {
-                    transform: rotate(45deg);
-                }
-            }
+        footer {
+            position: sticky; top: 100vh;
         }
     }
 }
 
-// sidebar sections
-.sidebar {
-    display: flex; flex-direction: column; gap: 1rem;
-    
-    header {
-        flex: 0 0 2rem;
+// detail
+header {
+    .site-title {
+        text-align: center;
         
-        h1 {
-            font-size: 2rem; text-align: center;
-        }
-    }
-    nav {
-        flex: 1 0 0;
-
-        .nav-wrapper {
-            height: 100%;
-            @include box;
-        }
-    }
-    footer {
-        flex: 0 0 2rem;
-        
-        div {
-            text-align: center;
+        &:after {
+            content: " ^^";
         }
     }
 }
-
-// mainview sections
-.mainview {
-    display: flex; flex-direction: column; gap: 1rem;
-    
-    .maintop {
-        flex: 0 0 2rem;
-        display: flex; justify-content: center; align-items: center;
-    }
-    article {
-        flex: 1 0 0;
+nav {
+    ul {
+        display: flex; gap: 2rem;
         
-        h1 {
-            margin: 0 0 3rem 0;
-            font-size: 2rem;
-            
+        &:before {
+            content: "Menus: ";
+        }
+    }
+}
+article {
+    h1 {
+        margin: 0 0 3rem 0;
+        font-size: 2rem;
+
+        &:before {
+            content: ">> ";
+        }
+    }
+    .meta {
+        color: var(--fg-2);
+
+        &:before {
+            content: "· ";
+        }
+    }
+    h2 {
+        margin: 3rem 0 1.5rem 0;
+        font-size: 1.5rem;
+
+        &:before {
+            content: "> ";
+        }
+    }
+    >p, >ul, >pre, >blockquote {
+        margin: 1.5rem 0;
+    }
+    blockquote {
+        font-size: 0.8rem;
+        @include box;
+    }
+    ul {
+        li {
+            margin-left: 1rem;
             &:before {
-                content: ">> ";
+                content: "·"; display: inline-block; width: 1rem; margin-left: -1rem;
             }
         }
-        .meta {
-            color: var(--fg-2);
-            
-            &:before {
-                content: "· ";
-            }
-        }
-        h2 {
-            margin: 3rem 0 1.5rem 0;
-            font-size: 1.5rem;
-            
-            &:before {
-                content: "> ";
-            }
-        }
-        >p, >ul, >pre, >blockquote {
-            margin: 1.5rem 0;
-        }
-        blockquote {
-            font-size: 0.8rem;
-            @include box;
-        }
-        ul {
-            li {
-                margin-left: 1rem;
-                &:before {
-                    content: "·"; display: inline-block; width: 1rem; margin-left: -1rem;
-                }
-            }
-        }
+    }
+}
+footer {
+    .msg {
+        text-align: center;
     }
 }
