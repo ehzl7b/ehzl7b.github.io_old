@@ -47,7 +47,7 @@ export const build_pages = async () => {
 
         let r = `<h1>${x.title} 관련 포스팅들</h1><div class="meta">${x.title} 관련 포스팅 링크 리스트</div><div class="meta">Last Updated: ${today}</div>`;
         for (let y of pages) {
-            r += `<p><a href="${}">${}</a></p>`;
+            // r += `<p><a href="${}">${}</a></p>`;
         }
         
 

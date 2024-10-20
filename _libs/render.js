@@ -55,3 +55,15 @@ export const pug2html = (file, args={}) => {
     let content = pug.compileFile(file)(args);
     return content;
 };
+
+export const md2json = (file) => {
+    let {content, data} = matter.read(file);
+    content = parse_md.render(content);
+    content = `<h1>${data.title}</div>`;
+    content = `<h1>${data.title}</h1><div class="meta">${data.description}</div><div class="meta">Last Updated: ${data.updated}</div>` + content;
+    
+    let obj = {};
+    Object.assign(obj, data);
+    Object.assign(obj, {content: content});
+    return obj;
+};
