@@ -2,18 +2,10 @@ import fg from "fast-glob";
 import fs from "fs-extra";
 import * as sass from "sass";
 import path from "path";
-import {md2html, pug2html} from "./render.js";
+import {md2json, pug2html} from "./render.js";
 
 const root = process.env.PWD;
 const mdfiles = fg.globSync(`${root}/_pages/**/*.md`);
-// const navfile = (() => {
-//     let tmp = fg.globSync(`${root}/_pages/**/*.json`)?.[0];
-//     if (!tmp) {
-//         console.log("No json file for navigation in _pages folder");
-//         process.exit(-1);
-//     }
-//     return tmp;
-// })();
 const site = {title: "EHZL7b 블로그"};
 const nav = fs.readJSONSync(`${root}/_pages/nav.json`);
 const today = new Date().toISOString().split("T")[0];
@@ -30,6 +22,9 @@ export const build_assets = async () => {
 };
 
 export const build_pages = async () => {
+    // 포스팅 저장용 임시파일
+    let h = new Map();
+
     // 포스팅 빌드
     for (let x of mdfiles) {
         let parsed = path.parse(x);
@@ -37,23 +32,50 @@ export const build_pages = async () => {
         if (!ver) continue;
 
         let name = parsed.name.replace(ver, "");
-        let content = md2html(x);
-        fs.outputFileSync(`${root}/_site/pages/${name}.html`);
+        let content = md2json(x);
+        fs.outputJSONSync(`${root}/_site/pages/${name}.json`, content);
+
+        let dir = parsed.dir.replace(`./_pages`, ``);
+        if (dir) {
+            if (!h.has(dir)) h.set(dir, new Map());
+            h.get(dir).set(`/pages/${name}`, [content.title, content.updated]);
+        }
     }
 
     // 네비게이션 페이지 빌드
     for (let x of nav) {
-        let pages = mdfiles.filter((y) => path.parse(y).dir.includes(id));
-
-        let r = `<h1>${x.title} 관련 포스팅들</h1><div class="meta">${x.title} 관련 포스팅 링크 리스트</div><div class="meta">Last Updated: ${today}</div>`;
-        for (let y of pages) {
-            // r += `<p><a href="${}">${}</a></p>`;
+        if (h.has(x)) {
+            let dir = h.get(x);
+            let title = `${x.title} 관련 포스팅들`;
+            let description = `${x.title} 관련 표스팅 링크 리스트`;
+            let updated = today;
+            let content = `<h1>${title}</h1><div class="meta">${description}</div><div class="meta">Last Updated: ${updated}</div>`;
+            for (let [address, [title, updated]] of dir) {
+                content += `<p><a href=${address}>${title}</a> <span>${updated}</span></p>`;
+            }
+            fs.outputFileSync(`${root}/_site${dir}.html`, {layout: "nav", title, description, updated, content});
         }
-        
-
     }
 
     // sitemap.xml 빌드
+    {
+        let content = `<?xml version="1.0" encoding="utf-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+        content += `<url><loc>https://ehzl7b.github.io/</loc></url>`;
+        for (let dir of h) {
+            content += `<url><loc>https://ehzl7b.github.io${dir}</loc></url>`;
+            for (let [address, _] of dir) {
+                content += `<url><loc>https://ehzl7b.github.io${address}</loc></url>`;
+            }
+        }
+        content += `</urlset>`;
+
+        fs.outputFileSync(`${root}/_site/sitemap.xml`, content, "utf-8");
+    }
+    // doctype xml
+    // urlset(xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
+    //     each page in pages
+    //         url
+    //             loc https://tezyns.github.io#{page.pathname}
 };
 
 export const build_sitehtml = async () => {};
