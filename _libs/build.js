@@ -10,18 +10,22 @@ const site = {title: "EHZL7b 블로그"};
 const nav = fs.readJSONSync(`${root}/_pages/nav.json`);
 const today = new Date().toISOString().split("T")[0];
 
-export const build_assets = async () => {
+export const init = () => {
+    fs.removeSync(`${root}/_site`);
+};
+
+export const build_assets = () => {
     // main.scss -> main.css
-    const css = sass.compileAsync(`${root}/_assets/main.scss`, {style: compressed});
+    const css = sass.compile(`${root}/_assets/main.scss`, {style: "compressed"});
     fs.outputFileSync(`${root}/_site/main.css`, css.css, "utf-8");
 
     // copy fixed assets
-    fs.copyFileSync(`${root}/_assets`, `${root}/_site`, {
+    fs.copySync(`${root}/_assets`, `${root}/_site`, {
         filter: (f, t) => !f.includes(".scss"),
     });
 };
 
-export const build_pages = async () => {
+export const build_pages = () => {
     // 포스팅 저장용 임시파일
     let h = new Map();
 
@@ -35,7 +39,7 @@ export const build_pages = async () => {
         let content = md2json(x);
         fs.outputJSONSync(`${root}/_site/pages/${name}.json`, content);
 
-        let dir = parsed.dir.replace(`./_pages`, ``);
+        let dir = parsed.dir.replace(`${root}/_pages/`, ``);
         if (dir) {
             if (!h.has(dir)) h.set(dir, new Map());
             h.get(dir).set(`/pages/${name}`, [content.title, content.updated]);
@@ -44,16 +48,16 @@ export const build_pages = async () => {
 
     // 네비게이션 페이지 빌드
     for (let x of nav) {
-        if (h.has(x)) {
-            let dir = h.get(x);
+        if (h.has(x.id)) {
+            let dir = h.get(x.id);
             let title = `${x.title} 관련 포스팅들`;
-            let description = `${x.title} 관련 표스팅 링크 리스트`;
+            let description = `${x.title} 관련 포스팅 링크 리스트`;
             let updated = today;
             let content = `<h1>${title}</h1><div class="meta">${description}</div><div class="meta">Last Updated: ${updated}</div>`;
             for (let [address, [title, updated]] of dir) {
                 content += `<p><a href=${address}>${title}</a> <span>${updated}</span></p>`;
             }
-            fs.outputJSONSync(`${root}/_site${dir}.json`, {layout: "nav", title, description, updated, content});
+            fs.outputJSONSync(`${root}/_site/pages/${x.id}.json`, {layout: "nav", title, description, updated, content});
         }
     }
 
@@ -78,7 +82,7 @@ export const build_pages = async () => {
     //             loc https://tezyns.github.io#{page.pathname}
 };
 
-export const build_sitehtml = async () => {
+export const build_sitehtml = () => {
     let content = pug2html(`${root}/_layouts/base.pug`, {site, nav});
     fs.outputFileSync(`${root}/_site/index.html`, content, "utf-8");
     fs.copyFileSync(`${root}/_site/index.html`, `${root}/_site/404.html`);
