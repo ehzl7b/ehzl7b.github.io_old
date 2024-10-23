@@ -53,7 +53,7 @@ export const build_pages = async () => {
             for (let [address, [title, updated]] of dir) {
                 content += `<p><a href=${address}>${title}</a> <span>${updated}</span></p>`;
             }
-            fs.outputFileSync(`${root}/_site${dir}.html`, {layout: "nav", title, description, updated, content});
+            fs.outputJSONSync(`${root}/_site${dir}.json`, {layout: "nav", title, description, updated, content});
         }
     }
 
@@ -78,4 +78,8 @@ export const build_pages = async () => {
     //             loc https://tezyns.github.io#{page.pathname}
 };
 
-export const build_sitehtml = async () => {};
+export const build_sitehtml = async () => {
+    let content = pug2html(`${root}/_layouts/base.pug`, {site, nav});
+    fs.outputFileSync(`${root}/_site/index.html`, content, "utf-8");
+    fs.copyFileSync(`${root}/_site/index.html`, `${root}/_site/404.html`);
+};
